@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title or "Bookmark Manager" }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="brand">
+                <a class="brand__title" href="{{ url_for('links.index') }}">Bookmark Manager</a>
+                <div class="brand__subtitle">Закладки, Категории И Теги</div>
+            </div>
+
+            <nav class="nav">
+                <a href="{{ url_for('links.index') }}">Ссылки</a>
+                <a href="{{ url_for('categories.list_create') }}">Категории</a>
+                <a href="{{ url_for('tags.list_tags') }}">Теги</a>
+                <a href="{{ url_for('links.create') }}">Добавить Ссылку</a>
+                <a href="{{ url_for('export.export_json') }}">JSON</a>
+                <a href="{{ url_for('export.export_csv') }}">CSV</a>
+            </nav>
+        </header>
+
+        {% include "components/flash.html" %}
+
+        <div class="layout {% if center_page %}layout--center{% endif %}">
+            {% if not center_page %}
+            <aside class="sidebar">
+                {% block sidebar %}{% endblock %}
+            </aside>
+            {% endif %}
+
+            <main class="main">
+                <div class="{% if center_page %}page-wrap{% endif %}">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

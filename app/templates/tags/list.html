@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set center_page = True %}
+{% block content %}
+<div class="row row--space">
+    <div>
+        <div class="title">Теги</div>
+        <div class="meta">Список, удаление и объединение</div>
+    </div>
+    <a class="btn btn--accent" href="{{ url_for('tags.merge') }}">Объединить</a>
+</div>
+
+{% if items|length == 0 %}
+<div class="card">
+    <div class="title">Тегов Пока Нет</div>
+    <div class="desc">Добавь ссылку с тегами, и они появятся здесь.</div>
+</div>
+{% endif %}
+
+{% for item in items %}
+<div class="card">
+    <div class="row row--space">
+        <div>
+            <div class="title">#{{ item.tag.name }}</div>
+            <div class="meta">Ссылок: {{ item.count }}</div>
+        </div>
+
+        <div class="row">
+            <a class="btn" href="{{ url_for('links.index', tags=('#' ~ item.tag.name)) }}">Показать Ссылки</a>
+
+            <form method="post"
+                  action="{{ url_for('tags.delete', tag_id=item.tag.id) }}"
+                  data-confirm="Удалить этот тег?">
+                <button type="submit" class="danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

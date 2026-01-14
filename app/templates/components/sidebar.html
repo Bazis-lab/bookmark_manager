@@ -1,0 +1,37 @@
+<div class="sidebar">
+    <div class="block">
+        <div class="block__title">Категории</div>
+
+        <a class="sideitem {% if filters and not filters.category_id %}active{% endif %}"
+           href="{{ url_for('links.index', q=(filters.q if filters else ''), tags=(filters.tags if filters else '')) }}">
+            Все Категории
+        </a>
+
+        {% for c in categories %}
+        <a class="sideitem {% if filters and filters.category_id|string == c.id|string %}active{% endif %}"
+           href="{{ url_for('links.index', category_id=c.id, q=(filters.q if filters else ''), tags=(filters.tags if filters else '')) }}">
+            {{ c.name }}
+        </a>
+        {% endfor %}
+
+        <div class="hint">Если список пустой  добавь категории в разделе Категории.</div>
+    </div>
+
+    <div class="block">
+        <div class="block__title">Теги</div>
+
+        <a class="sideitem {% if filters and not filters.tags %}active{% endif %}"
+           href="{{ url_for('links.index', q=(filters.q if filters else ''), category_id=(filters.category_id if filters else '')) }}">
+            Все Теги
+        </a>
+
+        {% for t in tags %}
+        <a class="sideitem {% if filters and (('#' ~ t.name) in (filters.tags or '') or (t.name in (filters.tags or ''))) %}active{% endif %}"
+           href="{{ url_for('links.index', tags=('#' ~ t.name), q=(filters.q if filters else ''), category_id=(filters.category_id if filters else '')) }}">
+            #{{ t.name }}
+        </a>
+        {% endfor %}
+
+        <div class="hint">Теги появляются после добавления ссылок с тегами.</div>
+    </div>
+</div>

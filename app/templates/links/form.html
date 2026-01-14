@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% set center_page = True %}
+{% block content %}
+
+<div class="form-page">
+
+    <div class="page-head center">
+        {% if mode == "create" %}
+            <div class="page-title">Добавить Ссылку</div>
+            <div class="page-subtitle">Заполни поля и нажми Сохранить.</div>
+        {% else %}
+            <div class="page-title">Редактировать Ссылку</div>
+            <div class="page-subtitle">Измени поля и нажми Сохранить.</div>
+        {% endif %}
+    </div>
+
+    {% if not categories %}
+    <div class="card form-card">
+        <div class="title">Нет Категорий</div>
+        <div class="desc">
+            Сначала создай хотя бы одну категорию, затем можно добавлять ссылки.
+        </div>
+        <div class="center" style="margin-top: 16px;">
+            <a class="btn btn--accent" href="{{ url_for('categories.list_create') }}">
+                Перейти К Категориям
+            </a>
+        </div>
+    </div>
+    {% else %}
+
+    <div class="card form-card">
+        <form method="post" class="form">
+
+            <div class="field">
+                <label>URL</label>
+                <input name="url"
+                       value="{{ form.get('url','') }}"
+                       placeholder="https://example.com"
+                       required>
+                <div class="small" style="margin-top: 6px;">
+                    Поддерживаются ссылки, начинающиеся с http:// или https://
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Категория</label>
+                <select name="category_id" required>
+                    <option value="">Выбери Категорию</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}"
+                        {% if form.get('category_id','')|string == c.id|string %}selected{% endif %}>
+                        {{ c.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Название</label>
+                <input name="title"
+                       value="{{ form.get('title','') }}"
+                       placeholder="Например: Документация Flask"
+                       required>
+            </div>
+
+            <div class="field">
+                <label>Описание</label>
+                <textarea name="description"
+                          rows="5"
+                          placeholder="Можно оставить пустым">{{ form.get('description','') }}</textarea>
+            </div>
+
+            <div class="field">
+                <label>Теги</label>
+                <input name="tags"
+                       value="{{ form.get('tags','') }}"
+                       placeholder="#python #flask #статья">
+            </div>
+
+            <div class="row center" style="margin-top: 18px;">
+                <button type="submit" class="btn btn--accent">Сохранить</button>
+                <a class="btn" href="{{ url_for('links.index') }}">Отмена</a>
+            </div>
+
+        </form>
+    </div>
+
+    {% endif %}
+</div>
+
+{% endblock %}

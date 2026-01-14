@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="title">Объединение Тегов</div>
+<div class="meta" style="margin-bottom: 12px;">Тег-источник будет удалён, ссылки получат тег-приёмник.</div>
+
+<div class="card">
+    <form method="post">
+        <div class="grid2">
+            <div>
+                <label>Тег-Источник</label>
+                <select name="source_id" required>
+                    <option value="">Выбери Тег</option>
+                    {% for t in tags %}
+                    <option value="{{ t.id }}">#{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Тег-Приёмник</label>
+                <select name="target_id" required>
+                    <option value="">Выбери Тег</option>
+                    {% for t in tags %}
+                    <option value="{{ t.id }}">#{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 12px;">
+            <button type="submit" class="btn btn--accent">Объединить</button>
+            <a class="btn" href="{{ url_for('tags.list_tags') }}">Назад</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

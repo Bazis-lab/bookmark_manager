@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+    {% include "components/sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row row--space">
+    <div>
+        <div class="title">Ссылки</div>
+        <div class="meta">Поиск и фильтрация по категориям и тегам</div>
+    </div>
+    <div class="row">
+        <a class="btn" href="{{ url_for('export.export_json') }}">Экспорт JSON</a>
+        <a class="btn" href="{{ url_for('export.export_csv') }}">Экспорт CSV</a>
+        <a class="btn btn--accent" href="{{ url_for('links.create') }}">Добавить</a>
+    </div>
+</div>
+
+<div class="card">
+    <form method="get">
+        <div class="grid2">
+            <div>
+                <label>Поиск</label>
+                <input name="q" value="{{ (filters.q if filters else '') }}" placeholder="Название или описание">
+            </div>
+
+            <div>
+                <label>Категория</label>
+                <select name="category_id">
+                    <option value="">Все Категории</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {% if filters and filters.category_id|string == c.id|string %}selected{% endif %}>
+                        {{ c.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top: 12px;" class="row">
+            <div style="flex: 1;">
+                <label>Теги</label>
+                <input name="tags" value="{{ (filters.tags if filters else '') }}" placeholder="#python #flask">
+                <div class="small" style="margin-top: 6px;">
+                    Если указать несколько тегов, ссылка должна содержать каждый из них.
+                </div>
+            </div>
+
+            <div class="row" style="align-items: flex-end;">
+                <button type="submit" class="btn btn--accent">Применить</button>
+                <a class="btn" href="{{ url_for('links.index') }}">Сбросить</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if not categories %}
+<div class="card">
+    <div class="title">Категории Пока Не Созданы</div>
+    <div class="desc">Сначала добавь категорию, затем можно будет добавлять ссылки.</div>
+    <div style="margin-top: 10px;">
+        <a class="btn btn--accent" href="{{ url_for('categories.list_create') }}">Открыть Категории</a>
+    </div>
+</div>
+{% endif %}
+
+{% if links|length == 0 %}
+<div class="card">
+    <div class="title">Ничего Не Найдено</div>
+    <div class="desc">Попробуй изменить фильтры или добавь первую ссылку.</div>
+    <div style="margin-top: 10px;">
+        <a class="btn btn--accent" href="{{ url_for('links.create') }}">Добавить Ссылку</a>
+    </div>
+</div>
+{% endif %}
+
+{% for link in links %}
+<div class="card">
+    <div class="row row--space">
+        <div>
+            <div class="title">{{ link.title }}</div>
+            <div class="meta">
+                Категория:
+                <a href="{{ url_for('links.index', category_id=link.category.id) }}">{{ link.category.name }}</a>
+                 Добавлено: {{ link.created_at.strftime("%Y-%m-%d %H:%M") }}
+            </div>
+        </div>
+
+        <div class="row">
+            <a class="btn" href="{{ link.url }}" target="_blank">Открыть</a>
+            <a class="btn" href="{{ url_for('links.edit', link_id=link.id) }}">Изменить</a>
+
+            <form method="post"
+                  action="{{ url_for('links.delete', link_id=link.id) }}"
+                  data-confirm="Удалить эту ссылку?">
+                <button type="submit" class="danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+
+    {% if link.description %}
+    <div class="desc">{{ link.description }}</div>
+    {% endif %}
+
+    {% if link.tags %}
+    <div class="badges">
+        {% for t in link.tags %}
+        <a class="badge" href="{{ url_for('links.index', tags=('#' ~ t.name)) }}">#{{ t.name }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}

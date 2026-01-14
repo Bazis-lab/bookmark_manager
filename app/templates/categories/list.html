@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set center_page = True %}
+{% block content %}
+<div class="row row--space">
+    <div>
+        <div class="title">Категории</div>
+        <div class="meta">Создание, переименование и удаление</div>
+    </div>
+</div>
+
+<div class="card">
+    <form method="post" class="row">
+        <div style="flex: 1;">
+            <label>Новая Категория</label>
+            <input name="name" placeholder="Например: Учёба">
+        </div>
+        <button type="submit" class="btn btn--accent">Создать</button>
+    </form>
+</div>
+
+{% for c in categories %}
+<div class="card">
+    <div class="row row--space">
+        <div>
+            <div class="title">{{ c.name }}</div>
+            <div class="meta">Ссылок: {{ c.links|length }}</div>
+        </div>
+
+        <div class="row">
+            <a class="btn" href="{{ url_for('links.index', category_id=c.id) }}">Показать Ссылки</a>
+
+            <form method="post"
+                  action="{{ url_for('categories.delete', category_id=c.id) }}"
+                  data-confirm="Удалить категорию? Все ссылки внутри тоже будут удалены.">
+                <button type="submit" class="danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+
+    <form method="post" action="{{ url_for('categories.rename', category_id=c.id) }}" class="row" style="margin-top: 12px;">
+        <div style="flex: 1;">
+            <label>Новое Название</label>
+            <input name="name" value="{{ c.name }}">
+        </div>
+        <button type="submit" class="btn btn--accent">Сохранить</button>
+    </form>
+</div>
+{% endfor %}
+{% endblock %}
