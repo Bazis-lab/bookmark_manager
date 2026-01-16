@@ -26,10 +26,10 @@ Thumbs.db
 htmlcov/
 .coverage
 
-# sqlite database (если хочешь хранить базу в гите - убери эти строки)
+# sqlite database 
 *.sqlite
 *.db
 
-# exports (если не надо хранить)
+# exports 
 export_*.json
 export_*.csv
